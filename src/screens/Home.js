@@ -6,7 +6,7 @@ import styles from '../styles';
 
 export default class Home extends React.Component {
 
-    static navigationOptions = {
+    static navigationOptions = ({ navigation }) => ({
         headerTitle: () => (
             <Image resizeMode="contain" style={styles.homeHeaderImage} source={require('../assets/logo.png')} />
         ),
@@ -15,13 +15,19 @@ export default class Home extends React.Component {
         },
         headerTintColor: '#ffffff',
         headerCenter: <Text>Test</Text>,
-        headerRight: <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()} onPress={() => alert('under development')}>
-            <View style={styles.p10}>
-                <Icon size={30} name="qrcode" style={styles.textWhite} />
-            </View>
-        </TouchableNativeFeedback>,
+        headerRight: (
+            <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()} onPress={() => navigation.navigate('scan')}>
+                <View style={styles.p10}>
+                    <Icon size={30} name="qrcode" style={styles.textWhite} />
+                </View>
+            </TouchableNativeFeedback>
+        ),
         headerLeft: <View></View>
-    };
+    });
+
+    _onScanClick() {
+        this.props.navigation.navigate('scan');
+    }
 
     render() {
         const menuButtons = [{
