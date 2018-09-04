@@ -14,6 +14,7 @@ export default class Scan extends Component {
     }
 
     _onBarCodeRead(e) {
+        this.props.navigation.navigate('locator');
         console.log(e);
     }
 
@@ -25,7 +26,6 @@ export default class Scan extends Component {
                         this.camera = ref;
                     }}
                     defaultOnFocusComponent={true}
-                    onFocusChanged={alert}
                     onBarCodeRead={this._onBarCodeRead.bind(this)}
                     autoFocus={RNCamera.Constants.AutoFocus.on}
                     style={styles.preview}

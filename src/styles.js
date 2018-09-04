@@ -6,12 +6,6 @@ export default StyleSheet.create({
         width: 50,
         height: 50
     },
-    homeCard: {
-        marginLeft: 10,
-        marginRight: 10,
-        backgroundColor: '#222222',
-        borderWidth: 0
-    },
     homeTitle: {
         color: '#ffffff',
         fontSize: 30,
@@ -20,36 +14,72 @@ export default StyleSheet.create({
     homeSubtitle: {
         fontSize: 15,
         textAlign: 'center',
-        color: '#ffffff'
+        color: '#ffffff',
+        paddingBottom: 40
     },
     homeUpperContainer: {
-        padding: 20
+        padding: 5,
+        backgroundColor: '#222222'
     },
-    homeSectionHeader: {
-        padding: 20,
-        backgroundColor: '#f9f9f9'
-    },
-    homeSectionText: {
-        fontWeight: 'bold',
-        textAlign: 'center',
-        fontSize: 20,
-        paddingBottom: 10,
-        marginBottom: 10,
-        borderBottomColor: '#999999',
-        borderBottomWidth: 1,
-        // backgroundColor: '#2980b9'
-        // color: '#2980b9'
+    homeInputContainer: {
+        position: 'absolute',
+        top: 65,
+        right: 30,
+        left: 30,
+        backgroundColor: '#ffffff',
+        borderRadius: 5
     },
     homeInput: {
-        padding: 10
+        paddingTop: 3,
+        paddingRight: 15,
+        paddingBottom: 3,
+        paddingLeft: 3,
+        borderColor: '#ededed',
+        borderWidth: 0.1
     },
-    textWhite: {
-        color: '#ffffff'
+    homePanelContainer: {
+        flex: 1,
+        position: 'relative'
+    },
+    homePanelHeader: {
+        height: 50,
+        backgroundColor: '#2ecc71',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopColor: '#27ae60',
+        borderTopWidth: 3
+    },
+    homePanelContent: {
+        flex: 1,
+        backgroundColor: '#f8f9fa',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    locatorFloatContainer: {
+        position: 'absolute',
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+        opacity: 0.5,
+        right: 20,
+        left: 20,
+        margin: 10,
+        padding: 10,
+        borderRadius: 10,
+        flex: 1
+    },
+    locatorFloatText: {
+        color: '#222222'
     },
     p10: {
         padding: 10
     },
     w100: {
         width: '100%'
+    },
+    cwhite: {
+        color: '#ffffff'
+    },
+    cblack: {
+        color: '#222222'
     }
 });

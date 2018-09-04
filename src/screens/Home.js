@@ -1,8 +1,13 @@
 import React from 'react';
-import { View, Text, Image, TouchableNativeFeedback, ScrollView } from 'react-native';
-import { Card, Input, ButtonGroup } from 'react-native-elements';
+import { View, Text, Image, TouchableNativeFeedback, Dimensions, TouchableOpacity } from 'react-native';
+import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Mapbox from '@mapbox/react-native-mapbox-gl';
+import SlidingUpPanel from 'rn-sliding-up-panel';
 import styles from '../styles';
+import config from '../config';
+
+Mapbox.setAccessToken(config.map.token);
 
 export default class Home extends React.Component {
 
@@ -18,73 +23,123 @@ export default class Home extends React.Component {
         headerRight: (
             <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()} onPress={() => navigation.navigate('scan')}>
                 <View style={styles.p10}>
-                    <Icon size={30} name="qrcode" style={styles.textWhite} />
+                    <Icon size={30} name="qrcode" style={styles.cwhite} />
                 </View>
             </TouchableNativeFeedback>
         ),
         headerLeft: <View></View>
     });
 
-    _onScanClick() {
+    state = {
+        mode: null,
+        from: [],
+        to: [],
+        success: null
+    }
+
+    _handleInputFocus(mode) {
+        this.setState({ mode });
+    }
+
+    async _handleConfirm() {
+        this.map.getCenter().then((d) => console.log(d));
+        this.setState({ mode: null });
+    }
+
+    _handleScanClick() {
         this.props.navigation.navigate('scan');
     }
 
     render() {
-        const menuButtons = [{
-            element: () =>
-                <View style={{ alignItems: 'center' }}>
-                    <Icon name="certificate" size={40} />
-                    <Text>Kontribusi</Text>
-                </View>
-        }, {
-            element: () =>
-                <View style={{ alignItems: 'center' }}>
-                    <Icon name="globe" size={40} />
-                    <Text>Website</Text>
-                </View>
-        }, {
-            element: () =>
-                <View style={{ alignItems: 'center' }}>
-                    <Icon name="map" size={40} />
-                    <Text>Peta</Text>
-                </View>
-        }, {
-            element: () =>
-                <View style={{ alignItems: 'center' }}>
-                    <Icon name="sign-out" size={40} />
-                    <Text>Keluar</Text>
-                </View>
-        }]
+        let { mode, success } = this.state;
         return (
-            <View>
-                <ScrollView>
-                    <Card containerStyle={[styles.homeCard, { marginTop: 0, marginLeft: 0, marginRight: 0 }]}>
-                        <View style={styles.homeUpperContainer}>
-                            <Text style={styles.homeTitle}>Mikroline</Text>
-                            <Text style={styles.homeSubtitle}>Pencarian jalur mikrolet kota Manado</Text>
-                        </View>
-                    </Card>
-                    <ButtonGroup
-                        containerStyle={{ marginTop: 0, marginLeft: 0, marginRight: 0, height: 80 }}
-                        buttons={menuButtons}
-                    />
-                    <Card title={<Text style={styles.homeSectionText}><Icon name="search" size={20} /> Cari Data</Text>}>
-                        <View>
-                            <Input disabled onFocus={() => alert('under development')} inputContainerStyle={styles.homeInput} placeholder="Cari Trayek" containerStyle={[styles.w100]} rightIcon={<Icon name="search" size={25} />} />
-                        </View>
-                    </Card>
-                    <Card title={<Text style={styles.homeSectionText}><Icon name="map-marker" size={20} /> Set Rute</Text>} style={styles.homeCard}>
-                        <View>
-                            <Input placeholder="Titik Awal" inputContainerStyle={styles.homeInput} containerStyle={styles.w100} rightIcon={<Icon name="map-marker" size={30} />} />
-                            <Input placeholder="Tujuan" inputContainerStyle={styles.homeInput} containerStyle={styles.w100} rightIcon={<Icon name="map-marker" size={30} />} />
-                        </View>
-                    </Card>
-                    <Card title={<Text style={styles.homeSectionText}><Icon name="align-center" size={20} /> Detail Rute</Text>} style={styles.homeCard}>
-                        <View>
+            <View style={{ flex: 1 }}>
+                {/* Header */}
+                {(mode === null) &&
+                    <View style={styles.homeUpperContainer}>
+                        <Text style={styles.homeTitle}>Mikroline</Text>
+                        <Text style={styles.homeSubtitle}>Pencarian jalur mikrolet kota Manado</Text>
+                    </View>}
 
-                        </View>
-                    </Card>
-                </ScrollView>
+                {/* Map container */}
+                <Mapbox.MapView
+                    ref={(map) => this.map = map}
+                    compassEnabled={false}
+                    style={{ flex: 1 }}
+                    styleURL="mapbox://styles/edgarjeremy/cjl437z2s57vh2ql8zpw6r2vw"
+                    zoomLevel={13}
+                    centerCoordinate={config.map.center}
+                    showUserLocation={true}>
+                </Mapbox.MapView>
+
+                {/* Inputs */}
+                {(mode === null) &&
+                    <View style={styles.homeInputContainer}>
+                        <TouchableOpacity onPress={() => this._handleInputFocus('from')}>
+                            <Input editable={false} placeholder="Titik Awal" inputContainerStyle={styles.homeInput} containerStyle={styles.w100} rightIcon={<Icon name="map-marker" size={30} />} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this._handleInputFocus('to')}>
+                            <Input editable={false} placeholder="Tujuan" inputContainerStyle={[styles.homeInput, { borderColor: 'transparent' }]} containerStyle={styles.w100} rightIcon={<Icon name="map-marker" size={30} />} />
+                        </TouchableOpacity>
+                    </View>}
+
+                {/* Pointer target */}
+                {(mode !== null) && (
+                    <View style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    }}>
+                        <Image resizeMode="contain" style={{
+                            width: 40,
+                            height: 40
+                        }} source={require('../assets/target.png')} />
+                        {/* <Button title="Konfirmasi" iconLeft={<Icon name="check-circle" />} /> */}
+                    </View>
+                )}
+
+                {/* Pointer controls */}
+                {(mode !== null) && (
+                    <View style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        bottom: 20,
+                        left: 0
+                    }}>
+                        <Button onPress={this._handleConfirm.bind(this)} title="Konfirmasi" iconLeft={<Icon name="check-circle" />} />
+                    </View>
+                )}
+
+                {/* Sliding panel */}
+                {(success === null) && (
+                    (success === true) ?
+                        <SlidingUpPanel
+                            visible
+                            startCollapsed
+                            showBackdrop={false}
+                            ref={c => this._panel = c}
+                            draggableRange={{
+                                top: Dimensions.get('window').height / 1.5,
+                                bottom: 130
+                            }}>
+                            <View style={styles.homePanelContainer}>
+                                <View style={styles.homePanelHeader}>
+                                    <Text style={[styles.cwhite, { fontWeight: 'bold' }]}>Jalur ditemukan. Slide up untuk detailnya</Text>
+                                </View>
+                                <View style={styles.homePanelContent}>
+                                    <Text>Bottom Sheet Content</Text>
+                                </View>
+                            </View>
+                        </SlidingUpPanel> : null)}
             </View>
         );
     }
